@@ -10,7 +10,7 @@ Demo di backend per la gestione di ticket con **Django REST Framework**, **Postg
 
 - [Tech stack](#tech-stack)
 - [Prerequisiti](#prerequisiti)
-- [Configurazione ambiente (`.env`)](#configurazione-ambiente-env)
+- [Configurazione ambiente (.env)](#configurazione-ambiente-env)
 - [Avvio con Docker](#avvio-con-docker)
 - [Esecuzione dei test automatici](#esecuzione-dei-test-automatici)
 - [Architettura e flusso ad alto livello](#architettura-e-flusso-ad-alto-livello)
