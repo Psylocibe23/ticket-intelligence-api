@@ -1,4 +1,3 @@
-````markdown
 # Ticket Intelligence API – Demo Django + Machine Learning
 
 Demo di backend per la gestione di ticket con **Django REST Framework**, **PostgreSQL**, **Docker** e un piccolo modello di **Machine Learning** per:
@@ -48,7 +47,7 @@ Non è richiesto installare Python né Postgres localmente se si utilizza il per
 
 Nella root del progetto, creare un file `.env` contenente almeno le variabili:
 
-```env
+
 DJANGO_SECRET_KEY=<stringa_lunga_e_random>
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
@@ -58,7 +57,7 @@ POSTGRES_USER=<utente_db_es. ticketuser>
 POSTGRES_PASSWORD=<password_db_robusta>
 
 DATABASE_URL=postgres://<utente_db>:<password_db>@db:5432/<nome_db>
-````
+
 
 Note:
 
