@@ -36,7 +36,7 @@ Demo di backend per la gestione di ticket con **Django REST Framework**, **Postg
 ## Prerequisiti
 
 - Docker installato e funzionante.
-- Docker Compose disponibile (versione plugin moderna va bene).
+- Docker Compose disponibile.
 - Accesso a una shell (Linux, macOS o WSL2/PowerShell su Windows).
 
 Non è richiesto installare Python né Postgres localmente se si utilizza il percorso con Docker.
@@ -47,7 +47,7 @@ Non è richiesto installare Python né Postgres localmente se si utilizza il per
 
 Nella root del progetto, creare un file `.env` contenente almeno le variabili:
 
-
+```
 DJANGO_SECRET_KEY=<stringa_lunga_e_random>
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
@@ -57,7 +57,7 @@ POSTGRES_USER=<utente_db_es. ticketuser>
 POSTGRES_PASSWORD=<password_db_robusta>
 
 DATABASE_URL=postgres://<utente_db>:<password_db>@db:5432/<nome_db>
-
+```
 
 Note:
 
