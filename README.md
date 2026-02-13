@@ -6,6 +6,16 @@ Demo di backend per la gestione di ticket con **Django REST Framework**, **Postg
 - trovare ticket simili a partire dal testo;
 - calcolare semplici metriche di supporto (trend per categoria, MTTR).
 
+## Indice
+
+- [Tech stack](#tech-stack)
+- [Prerequisiti](#prerequisiti)
+- [Configurazione ambiente (`.env`)](#configurazione-ambiente-env)
+- [Avvio con Docker](#avvio-con-docker)
+- [Esecuzione dei test automatici](#esecuzione-dei-test-automatici)
+- [Architettura e flusso ad alto livello](#architettura-e-flusso-ad-alto-livello)
+- [Endpoint principali](#endpoint-principali)
+- [Spiegazione dei file principali](#spiegazione-dei-file-principali)
 
 ---
 
@@ -24,7 +34,7 @@ Demo di backend per la gestione di ticket con **Django REST Framework**, **Postg
   - ORM Django per l’accesso ai dati
 
 - **ML / Analytics**
-  - scikit-learn (TF–IDF + Logistic Regression)
+  - scikit-learn (TF-IDF + Logistic Regression)
   - joblib (salvataggio modello su disco)
 
 - **Container / DevOps**
@@ -61,9 +71,7 @@ DATABASE_URL=postgres://<utente_db>:<password_db>@db:5432/<nome_db>
 
 Note:
 
-* In sviluppo è accettabile `DJANGO_DEBUG=True`.
-* In produzione impostare `DJANGO_DEBUG=False`, usare una `DJANGO_SECRET_KEY` robusta e non esporre il database al di fuori della rete interna.
-* Il file `.env` **non** deve essere versionato su Git (`.gitignore`).
+* In sviluppo è accettabile `DJANGO_DEBUG=True`, in un ambiente produzione si imposta `DJANGO_DEBUG=False`.
 
 ---
 
@@ -72,7 +80,7 @@ Note:
 1. **Clonare la repository**
 
    ```bash
-   git clone <URL_REPO>
+   git clone https://github.com/Psylocibe23/ticket-intelligence-api.git
    cd ticket-intelligence-api
    ```
 
@@ -194,14 +202,14 @@ L’applicazione rappresenta un **backend di ticketing** a cui un frontend (web 
    A partire dai ticket storici, il backend:
 
    * estrae il testo di `title` + `description` per ogni ticket etichettato con una categoria;
-   * costruisce una rappresentazione numerica (TF–IDF) del testo;
+   * costruisce una rappresentazione numerica (TF-IDF) del testo;
    * allena un modello di **Logistic Regression** che classifica i ticket in una delle categorie funzionali (billing, bug, account, …);
    * salva il modello su disco per riutilizzarlo senza riaddestrarlo a ogni richiesta.
 
    Una volta allenato, il modello viene utilizzato per:
 
    * **suggerire automaticamente una categoria** per un ticket (endpoint `/api/tickets/{id}/ml_predict/`);
-   * **trovare ticket simili** in base al testo (endpoint `/api/tickets/{id}/similar/`), usando la stessa rappresentazione TF–IDF e la **cosine similarity**.
+   * **trovare ticket simili** in base al testo (endpoint `/api/tickets/{id}/similar/`), usando la stessa rappresentazione TF-IDF e la **cosine similarity**.
 
 3. **Analytics**
 
@@ -260,20 +268,25 @@ Base path: `/api/tickets/`
 
 ### Azioni custom su ticket
 
-* `POST /api/tickets/{id}/assign/`
-  Assegnare un ticket a un utente:
-  body JSON `{"assigned_to": <user_id>}`.
+* `POST /api/tickets/{id}/assign/`  
+  Assegnare un ticket a un utente:  
+  body JSON `{"assigned_to": <user_id>}`.  
+  Caso d’uso: routing del ticket verso il membro del team responsabile.
 
-* `POST /api/tickets/{id}/transition/`
-  Cambiare lo stato del ticket nel workflow:
-  body JSON `{"status": "IN_PROGRESS" | "RESOLVED" | "CLOSED" | ...}`.
+* `POST /api/tickets/{id}/transition/`  
+  Cambiare lo stato del ticket nel workflow:  
+  body JSON `{"status": "IN_PROGRESS" | "RESOLVED" | "CLOSED" | ...}`.  
+  Caso d’uso: avanzamento del ticket lungo il processo di supporto (aperto → in lavorazione → risolto/chiuso).
 
-* `POST /api/tickets/{id}/ml_predict/`
-  Utilizzare il modello ML per suggerire una categoria.
-  La categoria suggerita viene anche scritta sul campo `category` del ticket.
+* `POST /api/tickets/{id}/ml_predict/`  
+  Utilizzare il modello ML per suggerire una categoria.  
+  La categoria suggerita viene anche scritta sul campo `category` del ticket.  
+  Caso d’uso: supporto al triage automatico dei ticket in ingresso.
 
-* `GET /api/tickets/{id}/similar/?top=5`
-  Ottenere i ticket più simili in base al testo, con parametro `top` (1–20).
+* `GET /api/tickets/{id}/similar/?top=5`  
+  Ottenere i ticket più simili in base al testo, con parametro `top` (1–20).  
+  Caso d’uso: riutilizzare soluzioni già esistenti cercando ticket storici simili.
+
 
 ### Endpoint ML / Analytics
 
@@ -352,11 +365,11 @@ Base path: `/api/tickets/`
 * Definire le funzioni di supporto per il modello ML:
 
   * raccolta dei dati di training dai `Ticket`;
-  * costruzione e training della pipeline TF–IDF + Logistic Regression;
+  * costruzione e training della pipeline TF-IDF + Logistic Regression;
   * salvataggio del modello con joblib;
   * caricamento con semplice cache in memoria;
   * predizione di categoria per un ticket;
-  * ricerca di ticket simili tramite cosine similarity sui vettori TF–IDF.
+  * ricerca di ticket simili tramite cosine similarity sui vettori TF-IDF.
 
 ### `tickets/management/commands/seed_tickets.py`
 
@@ -381,20 +394,5 @@ Base path: `/api/tickets/`
   * training e predizione del modello ML;
   * calcolo dell’MTTR con dati di esempio.
 
----
 
-## Note su sicurezza e buone pratiche
 
-* Non versionare:
-
-  * il file `.env`;
-  * artefatti del modello (`ml/artifacts/*.joblib`).
-* Creare sempre un superuser e password nuove in ogni ambiente.
-* In produzione:
-
-  * impostare `DJANGO_DEBUG=False`;
-  * configurare `ALLOWED_HOSTS` in modo esplicito;
-  * utilizzare TLS/HTTPS e un database gestito adeguatamente.
-
-```
-```
