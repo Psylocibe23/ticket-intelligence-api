@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.sqlite3
+
+# Virtualenv
+venv/
+.env/
+*.env
+
+# Django
+db.sqlite3
+
+# ML artifacts
+ml/artifacts/
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# Docker
+postgres_data/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
